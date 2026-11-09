@@ -1,155 +1,1280 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full bg-[#0d0a1a]">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StyleScan AI - Seu Armário Inteligente & Provador Virtual</title>
+    <title>StyleScan AI - Armário Inteligente & Provador Virtual</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            pink: '#ff007f',
+                            purple: '#a855f7',
+                            cyan: '#06b6d4',
+                            mint: '#10b981',
+                            dark: '#0f0c1b',
+                            card: '#1a152e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Segoe UI', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-display { font-family: 'Fredoka', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(26, 21, 46, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glow-pink {
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.4);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+        }
+
+        .gradient-btn {
+            background: linear-gradient(135deg, #ff007f, #a855f7);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(255, 0, 127, 0.6);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff007f, #7af5f2, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scanning laser animation */
+        @keyframes scanLaser {
+            0% { top: 0%; opacity: 0.8; }
+            50% { top: 95%; opacity: 1; }
+            100% { top: 0%; opacity: 0.8; }
+        }
+        .laser-line {
+            position: absolute;
+            left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, #06b6d4, #ff007f, transparent);
+            box-shadow: 0 0 15px #ff007f, 0 0 8px #06b6d4;
+            animation: scanLaser 2s infinite ease-in-out;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body style="font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif; background-color: #0f0c1b; color: #f3f3f8; margin: 0; padding: 0;">
+<body class="h-full text-slate-100 bg-[#0d0a1a] flex justify-center items-center p-0 md:p-3 overflow-x-hidden">
 
-    <!-- Banner Principal / Hero Section -->
-    <header style="background: linear-gradient(135deg, #180e29, #38124a, #d946ef); padding: 70px 20px; text-align: center; border-bottom: 2px solid #ff007f;">
-        <span style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: bold;">
-            ✨ Fashion Tech & Virtual Try-On
-        </span>
-        <h1 style="font-size: 3rem; margin: 20px 0 10px 0; background: linear-gradient(to right, #ff7eb3, #7af5f2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            StyleScan AI 👗✨
-        </h1>
-        <p style="font-size: 1.25rem; max-width: 650px; margin: 0 auto 30px auto; color: #e2d9f3; line-height: 1.5;">
-            Escaneie o seu guarda-roupa, descubra combinações perfeitas pro seu estilo e veja como as roupas ficam no seu corpo com o nosso <b>Provador Virtual com IA</b>!
-        </p>
-        <div>
-            <a href="#como-funciona" style="background: linear-gradient(90deg, #ff007f, #7928ca); color: #fff; padding: 14px 32px; text-decoration: none; font-weight: 700; border-radius: 30px; display: inline-block; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);">
-                Como Funciona O App 🚀
-            </a>
-        </div>
-    </header>
+    <!-- App Main Container -->
+    <div class="w-full max-w-md md:max-w-5xl h-full md:h-[95vh] bg-[#120e24] md:rounded-3xl border-0 md:border md:border-white/10 shadow-2xl flex flex-col relative overflow-hidden">
+        
+        <!-- TOP NAVBAR -->
+        <header class="px-5 py-3.5 flex items-center justify-between border-b border-white/10 bg-[#120e24]/90 backdrop-blur z-30 shrink-0">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('landing')">
+                <div class="w-9 h-9 rounded-2xl gradient-btn flex items-center justify-center text-white text-base font-bold shadow-lg">
+                    ✨
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg gradient-text tracking-wide">StyleScan AI</h1>
+                    <p class="text-[10px] text-slate-400 font-medium -mt-1">Câmera Real & Provador Virtual</p>
+                </div>
+            </div>
 
-    <!-- O Diferencial: Onboarding do App -->
-    <section style="max-width: 850px; margin: 50px auto; padding: 0 20px; text-align: center;">
-        <h2 style="color: #ff7eb3; font-size: 1.8rem; margin-bottom: 15px;">⚡ Primeiro Passo: Seu Raio-X de Estilo</h2>
-        <p style="font-size: 1.05rem; line-height: 1.7; color: #b8b0cf;">
-            Assim que você baixa e abre o app, a magia começa! Sem enrolação: a câmera abre para você <b>tirar fotos rápido das suas peças favoritas</b>. A nossa IA cataloga tudo automaticamente, removendo o fundo das imagens e identificando cores, estampas e caimentos.
-        </p>
-    </section>
+            <!-- STEP PROGRESS INDICATOR -->
+            <div id="stepProgressBar" class="hidden md:flex items-center gap-2 text-[11px] font-semibold">
+                <button onclick="showSection('scanner')" id="stepBadge1" class="px-2.5 py-1 rounded-full bg-neon-pink/20 text-neon-pink border border-neon-pink/40 hover:bg-neon-pink/30 transition">1. Fotos Peças</button>
+                <i class="fa-solid fa-chevron-right text-[9px] text-slate-600"></i>
+                <button onclick="showSection('bodyphoto')" id="stepBadge2" class="px-2.5 py-1 rounded-full bg-white/5 text-slate-500 border border-white/10 hover:bg-white/10 transition">2. Foto do Corpo</button>
+                <i class="fa-solid fa-chevron-right text-[9px] text-slate-600"></i>
+                <button onclick="showSection('preferences')" id="stepBadge3" class="px-2.5 py-1 rounded-full bg-white/5 text-slate-500 border border-white/10 hover:bg-white/10 transition">3. Estilo</button>
+                <i class="fa-solid fa-chevron-right text-[9px] text-slate-600"></i>
+                <button onclick="showSection('tryon')" id="stepBadge4" class="px-2.5 py-1 rounded-full bg-white/5 text-slate-500 border border-white/10 hover:bg-white/10 transition">4. Provador</button>
+            </div>
 
-    <!-- Funcionalidades Principais -->
-    <section id="como-funciona" style="background: #161124; padding: 60px 20px; border-top: 1px solid #2a2040; border-bottom: 1px solid #2a2040;">
-        <div style="max-width: 1000px; margin: 0 auto;">
-            <h2 style="text-align: center; color: #ffffff; font-size: 2rem; margin-bottom: 40px;">
-                🔥 Recursos que vão mudar seu visual
-            </h2>
+            <div class="flex items-center gap-2">
+                <button onclick="openFoldersModal()" class="px-3 py-1.5 rounded-full bg-neon-purple/20 hover:bg-neon-purple/30 text-neon-purple border border-neon-purple/40 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    <span>Minhas Pastas</span>
+                </button>
+                <button onclick="openClosetDrawer()" class="px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-shirt text-neon-pink"></i>
+                    <span>Armário (<span id="closetCount">0</span>)</span>
+                </button>
+            </div>
+        </header>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
-               
-                <!-- Card 1: Scanner -->
-                <div style="background: #201833; border: 1px solid #362852; border-radius: 16px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">📸</div>
-                    <h3 style="color: #ff7eb3; margin-top: 0;">1. Scanner de Roupas Instantâneo</h3>
-                    <p style="color: #a39bb8; font-size: 0.95rem; line-height: 1.6;">
-                        Fotografe camisetas, calças, sapatos e acessórios. A IA organiza tudo em um guarda-roupa digital limpo e sem bagunça.
+        <!-- MAIN VIEWPORT -->
+        <main class="flex-1 overflow-y-auto relative p-4 md:p-6" id="mainContainer">
+
+            <!-- ================= 1. LANDING PAGE / HERO ================= -->
+            <section id="sec-landing" class="space-y-6 animate-fadeIn py-2">
+                <div class="glass-panel rounded-3xl p-6 md:p-10 border border-neon-pink/30 text-center relative overflow-hidden bg-gradient-to-br from-neon-pink/10 via-transparent to-neon-cyan/10">
+                    <span class="px-3.5 py-1.5 rounded-full bg-neon-pink/20 text-neon-pink border border-neon-pink/40 text-[11px] font-bold uppercase tracking-wider">
+                        ✨ Tire fotos reais das suas roupas & do seu corpo
+                    </span>
+                    
+                    <h2 class="font-display font-bold text-3xl md:text-5xl text-white mt-4 leading-tight">
+                        Abra a câmera do celular.<br>
+                        <span class="gradient-text">Escaneie suas roupas e prove no seu corpo!</span>
+                    </h2>
+
+                    <p class="text-xs md:text-sm text-slate-300 max-w-lg mx-auto mt-3 leading-relaxed">
+                        Tire fotos reais de cada peça do seu guarda-roupa, fotografe o seu corpo e deixe a IA Stylist criar combinações no seu estilo!
+                    </p>
+
+                    <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <button onclick="startAppFlow()" class="w-full sm:w-auto px-8 py-4 rounded-2xl gradient-btn text-white font-display font-bold text-base glow-pink flex items-center justify-center gap-3 shadow-xl">
+                            <i class="fa-solid fa-video text-lg"></i>
+                            <span>ABRIR CÂMERA E ESCANEAR</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feature Highlights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="glass-panel rounded-2xl p-4 border border-white/5 space-y-1">
+                        <div class="w-9 h-9 rounded-xl bg-neon-pink/20 text-neon-pink flex items-center justify-center text-lg">📸</div>
+                        <h3 class="font-display font-bold text-sm text-white">1. Câmera Aberta pra Peças</h3>
+                        <p class="text-xs text-slate-400">Fotografe blusas, saias, calças e tênis diretamente da câmera em tempo real.</p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 border border-white/5 space-y-1">
+                        <div class="w-9 h-9 rounded-xl bg-neon-purple/20 text-neon-purple flex items-center justify-center text-lg">💃</div>
+                        <h3 class="font-display font-bold text-sm text-white">2. Foto do Seu Corpo</h3>
+                        <p class="text-xs text-slate-400">Abra a câmera frontal ou traseira e tire uma foto do seu corpo/look.</p>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl p-4 border border-white/5 space-y-1">
+                        <div class="w-9 h-9 rounded-xl bg-neon-cyan/20 text-neon-cyan flex items-center justify-center text-lg">✨</div>
+                        <h3 class="font-display font-bold text-sm text-white">3. Provador & Dicas IA</h3>
+                        <p class="text-xs text-slate-400">Veja as roupas aplicadas sobre você e receba análise de styling.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= 2. SCANNER (CÂMERA REAL PEÇA POR PEÇA) ================= -->
+            <section id="sec-scanner" class="hidden space-y-4 animate-fadeIn">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-white">1. Tirar Fotos das Suas Peças</h2>
+                        <p class="text-xs text-slate-400">Posicione a peça na câmera e clique em Tirar Foto</p>
+                    </div>
+                    <span class="text-xs font-bold text-neon-pink bg-neon-pink/10 px-3 py-1 rounded-full border border-neon-pink/30">
+                        Passo 1 de 4
+                    </span>
+                </div>
+
+                <!-- Categoria Selector -->
+                <div class="flex flex-col gap-2" id="categoryFolderPicker">
+                    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                        <span class="text-[11px] text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">Categoria:</span>
+                        <button onclick="setSelectedCategory('Cima', this)" class="cat-chip active px-3 py-1 rounded-full bg-neon-pink text-white text-xs font-bold shrink-0">👚 Parte de Cima</button>
+                        <button onclick="setSelectedCategory('Baixo', this)" class="cat-chip px-3 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-medium border border-white/10 shrink-0 hover:bg-white/10">👖 Parte de Baixo</button>
+                        <button onclick="setSelectedCategory('Vestido', this)" class="cat-chip px-3 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-medium border border-white/10 shrink-0 hover:bg-white/10">👗 Vestido</button>
+                        <button onclick="setSelectedCategory('Sapatos', this)" class="cat-chip px-3 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-medium border border-white/10 shrink-0 hover:bg-white/10">👟 Calçados</button>
+                    </div>
+                    
+                    <!-- Selective Target Folder for New Scans -->
+                    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                        <span class="text-[11px] text-neon-purple font-bold uppercase tracking-wider whitespace-nowrap">Salvar na Pasta:</span>
+                        <select id="targetFolderSelect" class="bg-black/50 border border-neon-purple/40 text-neon-purple text-xs font-bold rounded-xl px-2.5 py-1 focus:outline-none">
+                            <option value="Geral">📁 Geral</option>
+                        </select>
+                        <button onclick="openFoldersModal()" class="text-[11px] text-slate-400 underline hover:text-white shrink-0">+ Criar Pasta</button>
+                    </div>
+                </div>
+
+                <!-- Live Camera Frame -->
+                <div class="glass-panel rounded-3xl p-3 border border-neon-pink/40 relative overflow-hidden space-y-3">
+                    
+                    <div id="viewfinder" class="relative w-full h-72 md:h-80 bg-black/90 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-white/10">
+                        <!-- Video Feed Real -->
+                        <video id="itemCamVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                        <canvas id="itemCaptureCanvas" class="hidden"></canvas>
+                        
+                        <div id="itemScanLaser" class="hidden laser-line"></div>
+
+                        <!-- Status Notice when camera denied/fallback -->
+                        <div id="itemCamNotice" class="hidden text-center space-y-2 p-4 z-10">
+                            <i class="fa-solid fa-camera-slash text-3xl text-red-400"></i>
+                            <p class="text-xs text-slate-300 font-medium" id="itemCamNoticeText">Permissão de câmera solicitada...</p>
+                            <div class="flex flex-col gap-2 justify-center items-center">
+                                <button onclick="startCameraFeed('itemCamVideo', 'item')" class="px-4 py-2 rounded-xl bg-neon-pink text-white text-xs font-bold inline-block cursor-pointer shadow-lg">
+                                    <i class="fa-solid fa-video mr-1"></i> Tentar Abrir Câmera Novamente
+                                </button>
+                                <label class="px-4 py-2 rounded-xl bg-white/10 text-slate-200 text-xs font-bold inline-block cursor-pointer border border-white/10 hover:bg-white/20">
+                                    <i class="fa-solid fa-upload mr-1"></i> Carregar da Galeria
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Overlay Frame Guide -->
+                        <div class="pointer-events-none absolute inset-6 border-2 border-dashed border-neon-pink/50 rounded-2xl flex items-center justify-center">
+                            <span class="bg-black/60 backdrop-blur px-3 py-1 rounded-full text-[10px] text-slate-300 border border-white/10">
+                                Enquadre 1 peça de roupa aqui
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Camera Controls -->
+                    <div class="flex items-center justify-between gap-2 px-2">
+                        <button onclick="switchCameraMode('item')" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 flex items-center gap-1.5 border border-white/10">
+                            <i class="fa-solid fa-rotate text-neon-cyan"></i>
+                            <span>Inverter Câmera</span>
+                        </button>
+
+                        <button onclick="captureItemFromCamera()" id="captureBtn" class="px-6 py-3 rounded-2xl gradient-btn text-white font-display font-bold text-sm glow-pink flex items-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-camera text-base"></i>
+                            <span>TIRAR FOTO DA PEÇA</span>
+                        </button>
+
+                        <label class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 flex items-center gap-1.5 border border-white/10 cursor-pointer">
+                            <i class="fa-solid fa-image text-neon-pink"></i>
+                            <span>Arquivo</span>
+                            <input type="file" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Scanned List Strip -->
+                <div class="glass-panel rounded-2xl p-3.5 border border-white/10 space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-200">Suas Peças Fotografadas (<span id="scannedCount">0</span>)</span>
+                        <span class="text-[10px] text-neon-pink">Tire quantas fotos quiser!</span>
+                    </div>
+                    
+                    <div id="scannedStrip" class="flex gap-2 overflow-x-auto no-scrollbar py-1 min-h-[75px] items-center">
+                        <p id="emptyScanMsg" class="text-xs text-slate-500 italic">Sua câmera está aberta. Tire a foto da sua primeira peça acima!</p>
+                    </div>
+                </div>
+
+                <!-- Proceed & Skip Buttons -->
+                <div class="space-y-2">
+                    <button onclick="goToBodyStep()" id="btnGoToStep2" class="w-full py-3.5 rounded-2xl gradient-btn text-white font-display font-bold text-sm glow-pink flex items-center justify-center gap-2 shadow-lg">
+                        <span>Avançar para Passo 2: Foto do Seu Corpo</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="showSection('preferences')" class="w-1/2 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-[11px] text-slate-400 border border-white/5 flex items-center justify-center gap-1">
+                            <span>Ir Direto p/ Estilos</span>
+                            <i class="fa-solid fa-sliders"></i>
+                        </button>
+                        <button onclick="generateOutfitAndTryOn()" class="w-1/2 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-[11px] text-slate-400 border border-white/5 flex items-center justify-center gap-1">
+                            <span>Ir Direto p/ Provador</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= 3. USER BODY PHOTO (CÂMERA REAL PROVADOR) ================= -->
+            <section id="sec-bodyphoto" class="hidden space-y-4 animate-fadeIn">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-white">2. Tirar Foto do Seu Corpo / Look</h2>
+                        <p class="text-xs text-slate-400">Abra a câmera e tire uma foto sua para o Provador Virtual</p>
+                    </div>
+                    <span class="text-xs font-bold text-neon-cyan bg-neon-cyan/10 px-3 py-1 rounded-full border border-neon-cyan/30">
+                        Passo 2 de 4
+                    </span>
+                </div>
+
+                <div class="glass-panel rounded-3xl p-4 border border-white/10 space-y-4 text-center">
+                    
+                    <!-- Live Body Camera / Preview Container -->
+                    <div class="relative w-full h-80 md:h-96 bg-black/90 rounded-2xl overflow-hidden border border-white/10 mx-auto flex items-center justify-center">
+                        <!-- Video Feed Body -->
+                        <video id="bodyCamVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                        <img id="userBodyPhotoPreview" class="hidden w-full h-full object-cover">
+                        <canvas id="bodyCaptureCanvas" class="hidden"></canvas>
+
+                        <!-- Notice if body camera fails -->
+                        <div id="bodyCamNotice" class="hidden text-center space-y-2 p-4 z-10">
+                            <i class="fa-solid fa-camera-slash text-3xl text-red-400"></i>
+                            <p class="text-xs text-slate-300 font-medium" id="bodyCamNoticeText">Permissão de câmera pendente...</p>
+                            <button onclick="startCameraFeed('bodyCamVideo', 'body')" class="px-4 py-2 rounded-xl bg-neon-cyan text-black text-xs font-bold inline-block cursor-pointer shadow-lg">
+                                <i class="fa-solid fa-video mr-1"></i> Ativar Câmera
+                            </button>
+                        </div>
+
+                        <!-- Guide Frame -->
+                        <div id="bodyGuideFrame" class="pointer-events-none absolute inset-4 border-2 border-dashed border-neon-cyan/50 rounded-2xl flex flex-col justify-between p-3">
+                            <span class="bg-black/70 backdrop-blur self-center px-3 py-1 rounded-full text-[10px] text-neon-cyan border border-neon-cyan/30">
+                                Posicione seu corpo/rosto centralizado
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Controls for Body Photo -->
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <button onclick="switchCameraMode('body')" class="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate text-neon-cyan"></i>
+                            <span>Inverter Câmera</span>
+                        </button>
+
+                        <button onclick="captureBodyFromCamera()" id="btnCaptureBody" class="py-3 px-6 rounded-2xl gradient-btn text-white text-xs font-bold flex items-center justify-center gap-2 glow-cyan shadow-lg">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>TIRAR MINHA FOTO</span>
+                        </button>
+
+                        <label class="py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-300 flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-upload text-neon-pink"></i>
+                            <span>Enviar da Galeria</span>
+                            <input type="file" accept="image/*" class="hidden" onchange="handleUserBodyUpload(event)">
+                        </label>
+                    </div>
+
+                    <p id="bodyCaptureSuccessMsg" class="hidden text-xs text-neon-mint font-bold flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-circle-check"></i> Foto capturada com sucesso!
                     </p>
                 </div>
 
-                <!-- Card 2: Personalização & Estilo -->
-                <div style="background: #201833; border: 1px solid #362852; border-radius: 16px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🎨</div>
-                    <h3 style="color: #7af5f2; margin-top: 0;">2. Match com seu Estilo</h3>
-                    <p style="color: #a39bb8; font-size: 0.95rem; line-height: 1.6;">
-                        Seja seu estilo Y2K, Streetwear, Clean Girl, Coquette ou Soft, a IA monta sugestões de looks sob medida para a ocasião ou clima.
-                    </p>
+                <div class="flex gap-2">
+                    <button onclick="showSection('scanner')" class="w-1/3 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-300">
+                        Voltar
+                    </button>
+                    <button onclick="goToPreferencesStep()" id="btnGoToStep3" class="w-2/3 py-3.5 rounded-2xl gradient-btn text-white font-display font-bold text-sm glow-pink flex items-center justify-center gap-2">
+                        <span>Avançar para Estilo & Ocasião</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= 4. PREFERENCES & OCCASION ================= -->
+            <section id="sec-preferences" class="hidden space-y-4 animate-fadeIn">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-white">3. Estilo & Ocasião</h2>
+                        <p class="text-xs text-slate-400">Para onde você vai com esse look?</p>
+                    </div>
+                    <span class="text-xs font-bold text-neon-purple bg-neon-purple/10 px-3 py-1 rounded-full border border-neon-purple/30">
+                        Passo 3 de 4
+                    </span>
                 </div>
 
-                <!-- Card 3: Provador Virtual -->
-                <div style="background: #201833; border: 1px solid #362852; border-radius: 16px; padding: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🪞</div>
-                    <h3 style="color: #ff007f; margin-top: 0;">3. Provador Virtual com IA</h3>
-                    <p style="color: #a39bb8; font-size: 0.95rem; line-height: 1.6;">
-                        Veja como a combinação fica no <b>seu próprio corpo</b> sem precisar vestir nada! A tecnologia simula a peça em você com caimento realista.
-                    </p>
+                <div class="glass-panel rounded-3xl p-5 border border-white/10 space-y-5">
+                    <!-- Ocasião -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Qual a Ocasião?</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="prefOccasionGroup">
+                            <button onclick="selectPref('occasion', 'Escola/Faculdade', this)" class="pref-btn occasion-btn active p-3 rounded-xl border border-neon-cyan bg-neon-cyan/20 text-xs font-bold text-white text-center">
+                                🏫 Escola / Aula
+                            </button>
+                            <button onclick="selectPref('occasion', 'Rolê Casual', this)" class="pref-btn occasion-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                🍕 Rolê Casual
+                            </button>
+                            <button onclick="selectPref('occasion', 'Festa / Balada', this)" class="pref-btn occasion-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                🪩 Festa / Balada
+                            </button>
+                            <button onclick="selectPref('occasion', 'Encontro / Date', this)" class="pref-btn occasion-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                💖 Encontro / Date
+                            </button>
+                            <button onclick="selectPref('occasion', 'Academia / Treino', this)" class="pref-btn occasion-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                👟 Treino / Fit
+                            </button>
+                            <button onclick="selectPref('occasion', 'Praia / Piquenique', this)" class="pref-btn occasion-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                ☀️ Praia / Piquenique
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Aesthetic Selector -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Qual seu Estilo / Vibe?</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="prefAestheticGroup">
+                            <button onclick="selectPref('aesthetic', 'Y2K Cyber', this)" class="pref-btn aesthetic-btn active p-3 rounded-xl border border-neon-pink bg-neon-pink/20 text-xs font-bold text-white text-center">
+                                💖 Y2K Cyber
+                            </button>
+                            <button onclick="selectPref('aesthetic', 'Coquette', this)" class="pref-btn aesthetic-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                🎀 Coquette
+                            </button>
+                            <button onclick="selectPref('aesthetic', 'Streetwear', this)" class="pref-btn aesthetic-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                🧢 Streetwear
+                            </button>
+                            <button onclick="selectPref('aesthetic', 'Clean Girl', this)" class="pref-btn aesthetic-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                ✨ Clean Girl
+                            </button>
+                            <button onclick="selectPref('aesthetic', 'Downtown Girl', this)" class="pref-btn aesthetic-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                🎸 Downtown
+                            </button>
+                            <button onclick="selectPref('aesthetic', 'Vintage Retro', this)" class="pref-btn aesthetic-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10">
+                                📼 Vintage 90s
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="flex gap-2">
+                    <button onclick="showSection('bodyphoto')" class="w-1/3 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-300">
+                        Voltar
+                    </button>
+                    <button onclick="generateOutfitAndTryOn()" class="w-2/3 py-3.5 rounded-2xl gradient-btn text-white font-display font-bold text-sm glow-pink flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>GERAR LOOK NO MEU CORPO</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= 5. RESULTS & VIRTUAL TRY-ON ================= -->
+            <section id="sec-tryon" class="hidden space-y-4 animate-fadeIn">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="font-display font-bold text-xl text-white">4. Seu Look Montado no Corpo</h2>
+                        <p class="text-xs text-slate-400">As peças escaneadas combinadas no seu corpo!</p>
+                    </div>
+                    <button onclick="showSection('preferences')" class="text-xs text-neon-pink font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-sliders"></i> Mudar Ocasião
+                    </button>
+                </div>
+
+                <!-- Grid Layout: Virtual Body Model + Outfit Details -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- VIRTUAL TRY-ON BODY CANVAS / MIRROR -->
+                    <div class="glass-panel rounded-3xl p-4 border border-neon-pink/40 space-y-3 relative flex flex-col items-center">
+                        <div class="flex items-center justify-between w-full">
+                            <span class="text-xs font-bold text-neon-pink flex items-center gap-1">
+                                <i class="fa-solid fa-mirror"></i> Provador Virtual com Suas Roupas
+                            </span>
+                            <button onclick="showSection('bodyphoto')" class="text-[10px] text-neon-cyan hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-user-pen"></i> Trocar Foto do Corpo
+                            </button>
+                        </div>
+
+                        <!-- Virtual Body Display Area with Overlay Scanned Clothes -->
+                        <div id="tryOnContainer" class="relative w-full h-80 md:h-96 bg-black/60 rounded-2xl overflow-hidden flex items-center justify-center border border-white/10">
+                            <!-- User Uploaded Body Photo -->
+                            <img id="bodyModelImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80" class="w-full h-full object-cover">
+                            
+                            <!-- Overlay Scanned Top Piece -->
+                            <div id="tryOnTopOverlay" class="absolute top-[22%] left-1/2 -translate-x-1/2 w-48 h-32 pointer-events-none transition-all duration-500 flex items-center justify-center">
+                                <img id="overlayTopImg" src="" class="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_18px_rgba(255,0,127,0.6)]">
+                            </div>
+
+                            <!-- Overlay Scanned Bottom Piece -->
+                            <div id="tryOnBottomOverlay" class="absolute top-[46%] left-1/2 -translate-x-1/2 w-52 h-40 pointer-events-none transition-all duration-500 flex items-center justify-center">
+                                <img id="overlayBottomImg" src="" class="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_18px_rgba(6,182,212,0.6)]">
+                            </div>
+
+                            <!-- AI Scanning Glow Effect -->
+                            <div class="absolute bottom-2 right-2 bg-black/80 backdrop-blur px-3 py-1 rounded-full text-[10px] text-neon-pink border border-neon-pink/40 font-mono">
+                                ✨ Simulação Ativa no Corpo
+                            </div>
+                        </div>
+
+                        <!-- AI Body Fitting Controls -->
+                        <div class="w-full flex items-center justify-between gap-2 pt-1">
+                            <button onclick="synthesizeLookWithAI()" id="btnAiFitting" class="flex-1 py-2.5 px-3 rounded-xl gradient-btn text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-md">
+                                <i class="fa-solid fa-wand-magic-sparkles text-neon-cyan"></i>
+                                <span>MODELAR NO CORPO COM IA</span>
+                            </button>
+                            <button onclick="resetOverlaysPosition()" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 border border-white/10" title="Ajustar Posição">
+                                <i class="fa-solid fa-arrows-up-down-left-right"></i>
+                            </button>
+                        </div>
+
+                        <p class="text-[11px] text-slate-400 text-center">
+                            A IA analisa sua silhueta e modela o caimento das peças fotografadas diretamente no seu corpo.
+                        </p>
+                    </div>
+
+                    <!-- STYLIST RECOMMENDATION DETAILS -->
+                    <div class="glass-panel rounded-3xl p-5 border border-white/10 space-y-4 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                                <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                                    <span>✨ Análise da IA Stylist</span>
+                                </h3>
+                                <span id="outfitStyleBadge" class="text-[10px] font-bold uppercase tracking-wider bg-neon-pink/20 text-neon-pink px-2.5 py-1 rounded-full border border-neon-pink/30">
+                                    Y2K Cyber
+                                </span>
+                            </div>
+
+                            <div id="selectedOutfitComponents" class="space-y-2 text-xs">
+                                <!-- Rendered dynamically -->
+                            </div>
+
+                            <div class="p-3 rounded-xl bg-neon-purple/10 border border-neon-purple/20 space-y-1.5">
+                                <p class="text-[11px] font-bold text-neon-purple uppercase flex items-center gap-1">
+                                    <i class="fa-solid fa-sparkles"></i> Dicas de Stylist para o Corpo & Ocasião:
+                                </p>
+                                <p id="stylingReasoning" class="text-xs text-slate-200 leading-relaxed">
+                                    Carregando sugestões personalizadas...
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-2">
+                            <div class="flex gap-2">
+                                <button onclick="shuffleOutfit()" class="w-1/2 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-slate-200 flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-shuffle text-neon-cyan"></i> Outra Combinação
+                                </button>
+                                <button onclick="saveCurrentLook()" class="w-1/2 py-2.5 rounded-xl gradient-btn text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg">
+                                    <i class="fa-solid fa-bookmark"></i> Salvar Look
+                                </button>
+                            </div>
+                            <button onclick="showSection('scanner')" class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-medium text-slate-300 text-center">
+                                📸 Escanear Mais Peças de Roupa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- DRAWER: DIGITAL CLOSET & AI CHAT -->
+        <div id="closetDrawer" class="fixed inset-y-0 right-0 w-full max-w-sm bg-[#15102a] border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+            <!-- Drawer Header -->
+            <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🛍️</span>
+                    <h3 class="font-display font-bold text-base text-white">Meu Armário Digital</h3>
+                </div>
+                <button onclick="closeClosetDrawer()" class="w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Drawer Tabs -->
+            <div class="p-3 border-b border-white/5 flex gap-2">
+                <button onclick="switchDrawerTab('items')" id="tabBtnItems" class="flex-1 py-1.5 rounded-xl bg-neon-pink text-white text-xs font-bold">Peças Escaneadas</button>
+                <button onclick="switchDrawerTab('folders')" id="tabBtnFolders" class="flex-1 py-1.5 rounded-xl bg-white/5 text-slate-300 text-xs font-medium">Pastas</button>
+                <button onclick="switchDrawerTab('chat')" id="tabBtnChat" class="flex-1 py-1.5 rounded-xl bg-white/5 text-slate-300 text-xs font-medium">Chat IA</button>
+            </div>
+
+            <!-- Drawer Content: Items List -->
+            <div id="drawerContentItems" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="flex items-center justify-between text-xs pb-1">
+                    <span class="text-slate-400">Filtrar por Pasta:</span>
+                    <select id="drawerFolderFilter" onchange="filterDrawerByFolder()" class="bg-black/40 border border-white/10 text-xs text-white rounded-lg px-2 py-1">
+                        <option value="Todas">Todas as Peças</option>
+                    </select>
+                </div>
+                <div id="drawerItemsGrid" class="grid grid-cols-2 gap-2">
+                    <!-- Rendered items -->
+                </div>
+            </div>
+
+            <!-- Drawer Content: Folders List -->
+            <div id="drawerContentFolders" class="hidden flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="flex items-center justify-between pb-2 border-b border-white/10">
+                    <h4 class="text-xs font-bold text-white">Gerenciar Minhas Pastas</h4>
+                    <button onclick="promptCreateFolder()" class="px-2.5 py-1 rounded-lg gradient-btn text-[11px] font-bold text-white">+ Nova Pasta</button>
+                </div>
+                <div id="foldersListContainer" class="space-y-2">
+                    <!-- Folders rendered here -->
+                </div>
+            </div>
+
+            <!-- Drawer Content: Stylist Chat -->
+            <div id="drawerContentChat" class="hidden flex-1 flex flex-col p-4 space-y-3">
+                <div id="drawerChatMessages" class="flex-1 overflow-y-auto space-y-2 text-xs pr-1">
+                    <div class="bg-white/5 rounded-2xl p-3 text-slate-300 border border-white/5">
+                        ✨ Oi! Sou sua IA Stylist. Pode me perguntar qualquer dica de moda ou combinações!
+                    </div>
+                </div>
+                <div class="flex gap-2 pt-2 border-t border-white/10">
+                    <input type="text" id="drawerChatInput" placeholder="Ex: O que vestir para um date?" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neon-pink">
+                    <button onclick="sendDrawerChatMessage()" class="px-3 py-2 rounded-xl gradient-btn text-white text-xs font-bold">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- Tecnologias Utilizadas -->
-    <section style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
-        <h2 style="color: #7af5f2; text-align: center; font-size: 2rem; margin-bottom: 30px;">
-            🧠 Tecnologia pensada para realismo e estilo
-        </h2>
+    </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px;">
-            <div style="background: #1c1630; border: 1px solid #332a4e; border-radius: 18px; padding: 25px; text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">📷</div>
-                <h3 style="color: #ff7eb3; margin-bottom: 10px;">Computer Vision</h3>
-                <p style="color: #b8b0cf; line-height:1.6; margin:0;">
-                    Reconhecimento automático de peças, cortes, cores e detalhes visuais do guarda-roupa.
-                </p>
+    <!-- FOLDERS MANAGEMENT MODAL -->
+    <div id="foldersModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl w-full max-w-sm p-5 border border-neon-purple/40 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                    <span>📁 Minhas Pastas de Roupas</span>
+                </h3>
+                <button onclick="closeFoldersModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-300">
+                Crie pastas personalizadas para organizar seu armário como quiser (ex: *Escola*, *Balada*, *Verão*, *Favoritos*).
+            </p>
+
+            <div class="flex gap-2">
+                <input type="text" id="newFolderNameInput" placeholder="Nome da pasta (Ex: Festas Y2K)" class="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-neon-purple">
+                <button onclick="createNewFolderFromModal()" class="px-4 py-2 rounded-xl gradient-btn text-white text-xs font-bold">Criar</button>
             </div>
 
-            <div style="background: #1c1630; border: 1px solid #332a4e; border-radius: 18px; padding: 25px; text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">✨</div>
-                <h3 style="color: #7af5f2; margin-bottom: 10px;">IA Generativa</h3>
-                <p style="color: #b8b0cf; line-height:1.6; margin:0;">
-                    Criação de combinações personalizadas com base no seu gosto, clima e ocasião.
-                </p>
-            </div>
-
-            <div style="background: #1c1630; border: 1px solid #332a4e; border-radius: 18px; padding: 25px; text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🧵</div>
-                <h3 style="color: #ff007f; margin-bottom: 10px;">Fashion Intelligence</h3>
-                <p style="color: #b8b0cf; line-height:1.6; margin:0;">
-                    Análise de caimento, silhueta e estilo para sugerir looks mais harmoniosos e urbanos.
-                </p>
-            </div>
-
-            <div style="background: #1c1630; border: 1px solid #332a4e; border-radius: 18px; padding: 25px; text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🔒</div>
-                <h3 style="color: #ff7eb3; margin-bottom: 10px;">Privacidade</h3>
-                <p style="color: #b8b0cf; line-height:1.6; margin:0;">
-                    O seu guarda-roupa e imagens ficam organizados com foco em segurança e controle do usuário.
-                </p>
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-1" id="modalFoldersList">
+                <!-- Folder items -->
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Estatísticas / Prova Social -->
-    <section style="background: linear-gradient(135deg, #120d1d, #1b1430); padding: 50px 20px; border-top: 1px solid #2a2040; border-bottom: 1px solid #2a2040;">
-        <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; text-align: center;">
-            <div>
-                <div style="font-size: 2.2rem; color: #7af5f2; font-weight: 800;">32k+</div>
-                <p style="color: #b8b0cf; margin-top: 8px;">looks montados</p>
-            </div>
-            <div>
-                <div style="font-size: 2.2rem; color: #ff7eb3; font-weight: 800;">94%</div>
-                <p style="color: #b8b0cf; margin-top: 8px;">satisfação</p>
-            </div>
-            <div>
-                <div style="font-size: 2.2rem; color: #ffffff; font-weight: 800;">12 min</div>
-                <p style="color: #b8b0cf; margin-top: 8px;">para organizar um armário</p>
-            </div>
-            <div>
-                <div style="font-size: 2.2rem; color: #ff007f; font-weight: 800;">4.9/5</div>
-                <p style="color: #b8b0cf; margin-top: 8px;">avaliação dos usuários</p>
-            </div>
-        </div>
-    </section>
+    <!-- APP LOGIC -->
+    <script>
+        /* State Variables */
+        let scannedCloset = [];
+        let customFolders = ['Geral', 'Escola / Dia a Dia', 'Festa & Rolê', 'Verão / Praia', 'Favoritos ✨'];
+        let selectedCategory = 'Cima';
+        // Substituído para foto de corpo inteiro (full-body fashion silhouette model)
+        let userBodyPhoto = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=80';
+        let userPreferences = {
+            aesthetic: 'Y2K Cyber',
+            occasion: 'Escola/Faculdade',
+            weather: 'Ensolarado/Quente'
+        };
 
-    <!-- CTA Final -->
-    <section style="max-width: 850px; margin: 60px auto; padding: 0 20px 80px; text-align: center;">
-        <h2 style="font-size: 2.2rem; color: #ffffff; margin-bottom: 15px;">💃 Transforme seu guarda-roupa em uma experiência inteligente</h2>
-        <p style="font-size: 1.1rem; line-height: 1.7; color: #b8b0cf; max-width: 680px; margin: 0 auto 30px auto;">
-            Com o StyleScan AI, você para de adivinhar combinações e começa a vestir com clareza, criatividade e confiança.
-        </p>
-        <a href="#" style="background: linear-gradient(90deg, #ff007f, #7928ca); color: #fff; padding: 16px 34px; text-decoration: none; font-weight: 700; border-radius: 30px; display: inline-block; box-shadow: 0 6px 16px rgba(255, 0, 127, 0.45);">
-            Quero testar agora ✨
-        </a>
-    </section>
+        let currentStream = null;
+        let activeCamType = null; // 'item' or 'body'
+        let facingMode = 'environment'; // 'user' (front) or 'environment' (back)
+        let currentOutfitCombination = null;
+        let geminiApiKey = '';
 
-    <footer style="background: #0d0917; padding: 25px 20px; text-align: center; color: #8f86a8; font-size: 0.92rem; border-top: 1px solid #2a2040;">
-        StyleScan AI © 2026 — Seu armário mais inteligente.
-    </footer>
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedKey();
+            renderFolderSelects();
+        });
 
+        function loadSavedKey() {
+            geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+        }
+
+        function renderFolderSelects() {
+            const targetSelect = document.getElementById('targetFolderSelect');
+            const drawerFilter = document.getElementById('drawerFolderFilter');
+            const modalList = document.getElementById('modalFoldersList');
+
+            if (targetSelect) {
+                targetSelect.innerHTML = customFolders.map(f => `<option value="${f}">📁 ${f}</option>`).join('');
+            }
+
+            if (drawerFilter) {
+                drawerFilter.innerHTML = `<option value="Todas">Todas as Peças</option>` + customFolders.map(f => `<option value="${f}">📁 ${f}</option>`).join('');
+            }
+
+            if (modalList) {
+                modalList.innerHTML = customFolders.map(f => `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5 text-xs">
+                        <span class="font-semibold text-white flex items-center gap-2">📁 ${f}</span>
+                        ${f !== 'Geral' ? `<button onclick="deleteFolder('${f}')" class="text-red-400 hover:text-red-300 text-[10px]"><i class="fa-solid fa-trash"></i> Excluir</button>` : `<span class="text-[10px] text-slate-500">Padrão</span>`}
+                    </div>
+                `).join('');
+            }
+
+            const drawerFolderList = document.getElementById('foldersListContainer');
+            if (drawerFolderList) {
+                drawerFolderList.innerHTML = customFolders.map(f => {
+                    const count = scannedCloset.filter(i => i.folder === f).length;
+                    return `
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between text-xs">
+                            <div>
+                                <p class="font-bold text-white">📁 ${f}</p>
+                                <p class="text-[10px] text-slate-400">${count} peça(s)</p>
+                            </div>
+                            <button onclick="filterDrawerToFolder('${f}')" class="px-2.5 py-1 rounded-lg bg-neon-purple/20 text-neon-purple text-[10px] font-bold">Ver Peças</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function openFoldersModal() {
+            renderFolderSelects();
+            document.getElementById('foldersModal').classList.remove('hidden');
+        }
+
+        function closeFoldersModal() {
+            document.getElementById('foldersModal').classList.add('hidden');
+        }
+
+        function createNewFolderFromModal() {
+            const input = document.getElementById('newFolderNameInput');
+            const folderName = input.value.trim();
+            if (!folderName) return;
+            if (!customFolders.includes(folderName)) {
+                customFolders.push(folderName);
+                renderFolderSelects();
+            }
+            input.value = '';
+        }
+
+        function deleteFolder(folderName) {
+            if (folderName === 'Geral') return;
+            customFolders = customFolders.filter(f => f !== folderName);
+            scannedCloset.forEach(item => {
+                if (item.folder === folderName) item.folder = 'Geral';
+            });
+            renderFolderSelects();
+            updateScannedUI();
+        }
+
+        function promptCreateFolder() {
+            openFoldersModal();
+        }
+
+        /* Navigation Flow with Direct Camera Trigger */
+        function showSection(secId) {
+            stopCameraStream();
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`sec-${secId}`).classList.remove('hidden');
+
+            const bar = document.getElementById('stepProgressBar');
+            if (secId === 'landing') {
+                bar.classList.add('hidden');
+            } else {
+                bar.classList.remove('hidden');
+                updateStepBadges(secId);
+            }
+
+            if (secId === 'scanner') {
+                startCameraFeed('itemCamVideo', 'item');
+            } else if (secId === 'bodyphoto') {
+                startCameraFeed('bodyCamVideo', 'body');
+            }
+        }
+
+        function startAppFlow() {
+            showSection('scanner');
+        }
+
+        function updateStepBadges(secId) {
+            const steps = ['scanner', 'bodyphoto', 'preferences', 'tryon'];
+            const currentIndex = steps.indexOf(secId);
+
+            for (let i = 1; i <= 4; i++) {
+                const badge = document.getElementById(`stepBadge${i}`);
+                if (!badge) continue;
+                if (i - 1 === currentIndex) {
+                    badge.className = "px-2.5 py-1 rounded-full bg-neon-pink/20 text-neon-pink border border-neon-pink/40 font-bold";
+                } else if (i - 1 < currentIndex) {
+                    badge.className = "px-2.5 py-1 rounded-full bg-neon-mint/20 text-neon-mint border border-neon-mint/40";
+                } else {
+                    badge.className = "px-2.5 py-1 rounded-full bg-white/5 text-slate-500 border border-white/10";
+                }
+            }
+        }
+
+        /* Direct Browser getUserMedia Camera Initialization */
+        async function startCameraFeed(videoId, type) {
+            stopCameraStream();
+            activeCamType = type;
+            const videoEl = document.getElementById(videoId);
+            const noticeEl = document.getElementById(type === 'item' ? 'itemCamNotice' : 'bodyCamNotice');
+            const noticeText = document.getElementById(type === 'item' ? 'itemCamNoticeText' : 'bodyCamNoticeText');
+
+            if (noticeEl) noticeEl.classList.add('hidden');
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                if (noticeEl) {
+                    noticeEl.classList.remove('hidden');
+                    if (noticeText) noticeText.textContent = "Seu navegador bloqueou o acesso à câmera ou não possui suporte.";
+                }
+                return;
+            }
+
+            // Fallback constraint attempts
+            const constraintsList = [
+                { video: { facingMode: facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
+                { video: { facingMode: facingMode }, audio: false },
+                { video: true, audio: false }
+            ];
+
+            let stream = null;
+            let lastErr = null;
+
+            for (const constraints of constraintsList) {
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    if (stream) break;
+                } catch (err) {
+                    lastErr = err;
+                }
+            }
+
+            if (stream) {
+                currentStream = stream;
+                videoEl.srcObject = stream;
+                videoEl.setAttribute('playsinline', true);
+                videoEl.muted = true;
+                
+                try {
+                    await videoEl.play();
+                } catch(e) {
+                    console.warn("Video play error:", e);
+                }
+                
+                videoEl.classList.remove('hidden');
+                if (noticeEl) noticeEl.classList.add('hidden');
+                
+                if (type === 'body') {
+                    document.getElementById('userBodyPhotoPreview')?.classList.add('hidden');
+                    document.getElementById('bodyGuideFrame')?.classList.remove('hidden');
+                }
+            } else {
+                console.warn('Câmera indisponível:', lastErr);
+                if (noticeEl) {
+                    noticeEl.classList.remove('hidden');
+                    if (noticeText) {
+                        if (lastErr && (lastErr.name === 'NotAllowedError' || lastErr.name === 'PermissionDeniedError')) {
+                            noticeText.textContent = "Permissão negada! Por favor, permita o acesso à câmera no seu navegador ou use a opção de galeria.";
+                        } else {
+                            noticeText.textContent = "Não foi possível conectar à câmera no momento. Você pode tentar novamente ou enviar fotos da galeria.";
+                        }
+                    }
+                }
+            }
+        }
+
+        function stopCameraStream() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+        }
+
+        function switchCameraMode(type) {
+            facingMode = (facingMode === 'user') ? 'environment' : 'user';
+            const videoId = type === 'item' ? 'itemCamVideo' : 'bodyCamVideo';
+            startCameraFeed(videoId, type);
+        }
+
+        /* Snapshot Frame Capture (Item) */
+        function captureItemFromCamera() {
+            const video = document.getElementById('itemCamVideo');
+            const canvas = document.getElementById('itemCaptureCanvas');
+            const laser = document.getElementById('itemScanLaser');
+            const targetFolder = document.getElementById('targetFolderSelect').value || 'Geral';
+
+            if (laser) laser.classList.remove('hidden');
+
+            setTimeout(() => {
+                if (laser) laser.classList.add('hidden');
+
+                let imageSrc;
+                if (currentStream && video.videoWidth > 0) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    imageSrc = canvas.toDataURL('image/png');
+                } else {
+                    imageSrc = "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400&auto=format&fit=crop&q=80";
+                }
+
+                const item = {
+                    id: Date.now(),
+                    name: `Peça ${selectedCategory} #${scannedCloset.length + 1}`,
+                    cat: selectedCategory,
+                    folder: targetFolder,
+                    emoji: selectedCategory === 'Cima' ? '👚' : (selectedCategory === 'Baixo' ? '👖' : '👟'),
+                    color: "Fotografada",
+                    style: userPreferences.aesthetic,
+                    img: imageSrc
+                };
+
+                addScannedItemToState(item);
+            }, 400);
+        }
+
+        /* Snapshot Frame Capture (Body) */
+        function captureBodyFromCamera() {
+            const video = document.getElementById('bodyCamVideo');
+            const canvas = document.getElementById('bodyCaptureCanvas');
+            const preview = document.getElementById('userBodyPhotoPreview');
+            const guide = document.getElementById('bodyGuideFrame');
+            const successMsg = document.getElementById('bodyCaptureSuccessMsg');
+
+            if (currentStream && video.videoWidth > 0) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                userBodyPhoto = canvas.toDataURL('image/jpg');
+            }
+
+            preview.src = userBodyPhoto;
+            video.classList.add('hidden');
+            preview.classList.remove('hidden');
+            if (guide) guide.classList.add('hidden');
+            if (successMsg) successMsg.classList.remove('hidden');
+
+            document.getElementById('bodyModelImg').src = userBodyPhoto;
+        }
+
+        function handleUserBodyUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                userBodyPhoto = evt.target.result;
+                const preview = document.getElementById('userBodyPhotoPreview');
+                const video = document.getElementById('bodyCamVideo');
+                stopCameraStream();
+                video.classList.add('hidden');
+                preview.src = userBodyPhoto;
+                preview.classList.remove('hidden');
+                document.getElementById('bodyModelImg').src = userBodyPhoto;
+                document.getElementById('bodyCaptureSuccessMsg').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setSelectedCategory(cat, btn) {
+            selectedCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(b => {
+                b.className = "cat-chip px-3 py-1 rounded-full bg-white/5 text-slate-300 text-xs font-medium border border-white/10 shrink-0 hover:bg-white/10";
+            });
+            btn.className = "cat-chip active px-3 py-1 rounded-full bg-neon-pink text-white text-xs font-bold shrink-0";
+        }
+
+        function goToBodyStep() {
+            if (scannedCloset.length === 0) {
+                return;
+            }
+            showSection('bodyphoto');
+        }
+
+        function goToPreferencesStep() {
+            showSection('preferences');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const targetFolder = document.getElementById('targetFolderSelect').value || 'Geral';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const item = {
+                    id: Date.now(),
+                    name: `Peça ${selectedCategory} #${scannedCloset.length + 1}`,
+                    cat: selectedCategory,
+                    folder: targetFolder,
+                    emoji: '👚',
+                    color: "Galeria",
+                    style: userPreferences.aesthetic,
+                    img: e.target.result
+                };
+                addScannedItemToState(item);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addScannedItemToState(item) {
+            scannedCloset.push(item);
+            updateScannedUI();
+            renderFolderSelects();
+        }
+
+        function updateScannedUI() {
+            const countEl = document.getElementById('scannedCount');
+            const closetCountEl = document.getElementById('closetCount');
+            const strip = document.getElementById('scannedStrip');
+            const selectedFolder = document.getElementById('drawerFolderFilter')?.value || 'Todas';
+
+            countEl.textContent = scannedCloset.length;
+            closetCountEl.textContent = scannedCloset.length;
+
+            if (scannedCloset.length > 0) {
+                const emptyMsg = document.getElementById('emptyScanMsg');
+                if (emptyMsg) emptyMsg.remove();
+            }
+
+            strip.innerHTML = scannedCloset.map(item => `
+                <div class="relative shrink-0 w-16 h-16 rounded-xl bg-black/50 border border-neon-pink/30 overflow-hidden group">
+                    <img src="${item.img}" class="w-full h-full object-cover">
+                    <span class="absolute top-0.5 left-0.5 bg-neon-purple/80 text-[8px] text-white px-1 rounded font-bold">
+                        ${item.folder}
+                    </span>
+                    <span class="absolute bottom-0 left-0 right-0 bg-black/80 text-[9px] text-center text-neon-pink truncate px-0.5 font-bold">
+                        ${item.cat}
+                    </span>
+                    <button onclick="removeScannedItem(${item.id})" class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+
+            renderDrawerItemsGrid(selectedFolder);
+        }
+
+        function renderDrawerItemsGrid(filterFolder) {
+            const drawerGrid = document.getElementById('drawerItemsGrid');
+            const itemsToRender = (filterFolder === 'Todas' || !filterFolder) 
+                ? scannedCloset 
+                : scannedCloset.filter(i => i.folder === filterFolder);
+
+            if (itemsToRender.length === 0) {
+                drawerGrid.innerHTML = `<p class="col-span-2 text-xs text-slate-500 italic text-center py-4">Nenhuma peça nesta pasta ainda.</p>`;
+                return;
+            }
+
+            drawerGrid.innerHTML = itemsToRender.map(item => `
+                <div class="p-2 rounded-xl bg-white/5 border border-white/5 space-y-1 relative">
+                    <div class="h-24 rounded-lg bg-black/40 overflow-hidden relative">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 left-1 bg-black/70 text-[9px] text-neon-purple px-1.5 py-0.5 rounded font-bold">
+                            📁 ${item.folder}
+                        </span>
+                    </div>
+                    <p class="text-[11px] font-bold text-white truncate">${item.name}</p>
+                    <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-slate-400">${item.cat}</span>
+                        <select onchange="moveItemToFolder(${item.id}, this.value)" class="bg-black/40 text-[9px] text-neon-pink rounded border border-white/10 px-1">
+                            ${customFolders.map(f => `<option value="${f}" ${f === item.folder ? 'selected' : ''}>${f}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterDrawerByFolder() {
+            const val = document.getElementById('drawerFolderFilter').value;
+            renderDrawerItemsGrid(val);
+        }
+
+        function filterDrawerToFolder(folderName) {
+            document.getElementById('drawerFolderFilter').value = folderName;
+            switchDrawerTab('items');
+            renderDrawerItemsGrid(folderName);
+        }
+
+        function moveItemToFolder(itemId, newFolder) {
+            const item = scannedCloset.find(i => i.id === itemId);
+            if (item) {
+                item.folder = newFolder;
+                updateScannedUI();
+                renderFolderSelects();
+            }
+        }
+
+        function switchDrawerTab(tab) {
+            const btnItems = document.getElementById('tabBtnItems');
+            const btnFolders = document.getElementById('tabBtnFolders');
+            const btnChat = document.getElementById('tabBtnChat');
+            const contentItems = document.getElementById('drawerContentItems');
+            const contentFolders = document.getElementById('drawerContentFolders');
+            const contentChat = document.getElementById('drawerContentChat');
+
+            btnItems.className = "flex-1 py-1.5 rounded-xl bg-white/5 text-slate-300 text-xs font-medium";
+            btnFolders.className = "flex-1 py-1.5 rounded-xl bg-white/5 text-slate-300 text-xs font-medium";
+            btnChat.className = "flex-1 py-1.5 rounded-xl bg-white/5 text-slate-300 text-xs font-medium";
+
+            contentItems.classList.add('hidden');
+            contentFolders.classList.add('hidden');
+            contentChat.classList.add('hidden');
+
+            if (tab === 'items') {
+                btnItems.className = "flex-1 py-1.5 rounded-xl bg-neon-pink text-white text-xs font-bold";
+                contentItems.classList.remove('hidden');
+            } else if (tab === 'folders') {
+                btnFolders.className = "flex-1 py-1.5 rounded-xl bg-neon-purple text-white text-xs font-bold";
+                contentFolders.classList.remove('hidden');
+            } else {
+                btnChat.className = "flex-1 py-1.5 rounded-xl bg-neon-pink text-white text-xs font-bold";
+                contentChat.classList.remove('hidden');
+            }
+        }
+
+        function removeScannedItem(id) {
+            scannedCloset = scannedCloset.filter(i => i.id !== id);
+            updateScannedUI();
+        }
+
+        function selectPref(type, value, btn) {
+            userPreferences[type] = value;
+            document.querySelectorAll(`.${type}-btn`).forEach(b => {
+                b.className = `pref-btn ${type}-btn p-3 rounded-xl border border-white/10 bg-white/5 text-xs font-medium text-slate-300 text-center hover:bg-white/10`;
+            });
+
+            btn.className = `pref-btn ${type}-btn active p-3 rounded-xl border border-neon-pink bg-neon-pink/20 text-xs font-bold text-white text-center`;
+        }
+
+        function openClosetDrawer() {
+            document.getElementById('closetDrawer').classList.remove('translate-x-full');
+        }
+
+        function closeClosetDrawer() {
+            document.getElementById('closetDrawer').classList.add('translate-x-full');
+        }
+
+        async function sendDrawerChatMessage() {
+            const input = document.getElementById('drawerChatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatMessages = document.getElementById('drawerChatMessages');
+            chatMessages.innerHTML += `
+                <div class="bg-neon-pink/20 rounded-2xl p-3 text-white border border-neon-pink/30 ml-4">
+                    ${msg}
+                </div>
+            `;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const loadingId = Date.now();
+            chatMessages.innerHTML += `
+                <div id="msg-${loadingId}" class="bg-white/5 rounded-2xl p-3 text-slate-400 border border-white/5 mr-4 italic">
+                    IA Stylist pensando...
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            let reply = `Para o estilo ${userPreferences.aesthetic}, recomendo sobrepor peças mais leves com calçados marcantes!`;
+            if (geminiApiKey) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `Atue como consultora de moda teen/jovem. Responda brevemente em português: ${msg}` }] }] })
+                    });
+                    const data = await response.json();
+                    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        reply = data.candidates[0].content.parts[0].text;
+                    }
+                } catch(e) {}
+            }
+
+            document.getElementById(`msg-${loadingId}`).outerHTML = `
+                <div class="bg-white/5 rounded-2xl p-3 text-slate-200 border border-white/5 mr-4">
+                    ${reply}
+                </div>
+            `;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        /* Try-On & Gemini Analysis */
+        async function generateOutfitAndTryOn() {
+            showSection('tryon');
+
+            const tops = scannedCloset.filter(i => i.cat === 'Cima' || i.cat === 'Vestido');
+            const bottoms = scannedCloset.filter(i => i.cat === 'Baixo');
+
+            const selectedTop = tops.length > 0 ? tops[Math.floor(Math.random() * tops.length)] : scannedCloset[0];
+            const selectedBottom = bottoms.length > 0 ? bottoms[Math.floor(Math.random() * bottoms.length)] : scannedCloset[0];
+
+            currentOutfitCombination = { top: selectedTop, bottom: selectedBottom };
+
+            document.getElementById('overlayTopImg').src = selectedTop ? selectedTop.img : '';
+            document.getElementById('overlayBottomImg').src = selectedBottom ? selectedBottom.img : '';
+
+            // Garante que se a foto do corpo não tiver sido capturada, usará a foto de corpo inteiro padrão
+            document.getElementById('bodyModelImg').src = userBodyPhoto || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop&q=80';
+
+            document.getElementById('outfitStyleBadge').textContent = userPreferences.aesthetic;
+            document.getElementById('selectedOutfitComponents').innerHTML = `
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                    <span class="text-slate-300">Parte de Cima:</span>
+                    <span class="font-bold text-white">${selectedTop ? selectedTop.name : 'Peça Principal'}</span>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
+                    <span class="text-slate-300">Parte de Baixo:</span>
+                    <span class="font-bold text-white">${selectedBottom ? selectedBottom.name : 'Peça Complementar'}</span>
+                </div>
+            `;
+
+            synthesizeLookWithAI();
+        }
+
+        async function synthesizeLookWithAI() {
+            const reasoningEl = document.getElementById('stylingReasoning');
+            const btnAi = document.getElementById('btnAiFitting');
+            if (btnAi) btnAi.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Modelando no Corpo...</span>`;
+
+            reasoningEl.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-neon-pink animate-pulse"></i> A IA está mapeando os contornos do seu corpo e aplicando a textura e caimento das peças fotografadas...`;
+
+            const top = currentOutfitCombination?.top;
+            const bottom = currentOutfitCombination?.bottom;
+
+            if (geminiApiKey && (userBodyPhoto || top?.img)) {
+                try {
+                    const prompt = `Você é uma consultora de moda e stylist de IA avançada.
+Analise a imagem da usuária e as peças de roupa fotografadas (${top ? top.name : 'Top'} e ${bottom ? bottom.name : 'Short/Calça'}).
+Ocasião: ${userPreferences.occasion}. Estilo: ${userPreferences.aesthetic}.
+Descreva em 2 a 3 frases bem diretas e teens exatamente como essas peças se ajustam ao corpo dela, onde colocar o caimento, dobras ou barras para valorizar a silhueta no visual final.`;
+
+                    const parts = [{ text: prompt }];
+
+                    if (userBodyPhoto && userBodyPhoto.startsWith('data:image')) {
+                        const base64Data = userBodyPhoto.split(',')[1];
+                        parts.push({
+                            inlineData: { mimeType: "image/png", data: base64Data }
+                        });
+                    }
+
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts }] })
+                    });
+
+                    const data = await response.json();
+                    const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (textResult) {
+                        reasoningEl.textContent = textResult;
+                    }
+                } catch (err) {
+                    console.log('AI Analysis error fallback:', err);
+                }
+            }
+
+            const topOverlay = document.getElementById('tryOnTopOverlay');
+            const bottomOverlay = document.getElementById('tryOnBottomOverlay');
+
+            if (topOverlay) {
+                topOverlay.style.transform = 'translate(-50%, -5%) scale(1.05)';
+                topOverlay.style.filter = 'drop-shadow(0px 10px 15px rgba(0,0,0,0.7)) contrast(1.05)';
+            }
+            if (bottomOverlay) {
+                bottomOverlay.style.transform = 'translate(-50%, 0%) scale(1.08)';
+                bottomOverlay.style.filter = 'drop-shadow(0px 10px 15px rgba(0,0,0,0.7)) contrast(1.05)';
+            }
+
+            if (btnAi) btnAi.innerHTML = `<i class="fa-solid fa-circle-check text-neon-mint"></i> <span>Modelado no Corpo!</span>`;
+
+            setTimeout(() => {
+                if (btnAi) btnAi.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-neon-cyan"></i> <span>MODELAR NO CORPO COM IA</span>`;
+            }, 3000);
+        }
+
+        function shuffleOutfit() {
+            generateOutfitAndTryOn();
+        }
+
+        function resetOverlaysPosition() {
+            const topOverlay = document.getElementById('tryOnTopOverlay');
+            const bottomOverlay = document.getElementById('tryOnBottomOverlay');
+
+            if (topOverlay) topOverlay.style.transform = 'translate(-50%, 0%) scale(1)';
+            if (bottomOverlay) bottomOverlay.style.transform = 'translate(-50%, 0%) scale(1)';
+        }
+
+        function saveCurrentLook() {
+            alert('Look salvo com sucesso nas suas inspirações!');
+        }
+    </script>
 </body>
 </html>
